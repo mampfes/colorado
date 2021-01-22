@@ -2,24 +2,19 @@
 
 #include "LinearGlider.hpp"
 
-LinearGlider::LinearGlider()
-{}
-
-void LinearGlider::setup()
+void LinearGlider::setup(TimeOffset startTime)
 {
-    startTime_ = std::chrono::steady_clock::now();
+    startOffset_ = startTime;
 }
 
-void LinearGlider::update()
+void LinearGlider::update(TimeOffset now)
 {
-    auto now = std::chrono::steady_clock::now();
-
     // all calculations are done in microseconds relative to the start of the cycle
     int32_t cycleTimeUs = std::chrono::duration_cast<std::chrono::microseconds>(cycleTime_).count();
     int32_t ledCyleTimeUs = cycleTimeUs / LED_COUNT;
 
     int32_t beamWidthTimeUs = cycleTimeUs * beamWidth_.num / beamWidth_.denom;
-    auto qr = std::div(std::chrono::duration_cast<std::chrono::microseconds>(now - startTime_).count(), (cycleTimeUs-beamWidthTimeUs));
+    auto qr = std::div(std::chrono::duration_cast<TimeOffset>(now - startOffset_).count(), (cycleTimeUs-beamWidthTimeUs));
     int32_t beamStartTimeUs = (qr.quot & 1) ? qr.rem : (cycleTimeUs-beamWidthTimeUs-qr.rem);
     int32_t beamEndTimeUs = beamStartTimeUs + cycleTimeUs * beamWidth_.num / beamWidth_.denom;
 
@@ -37,9 +32,12 @@ void LinearGlider::update()
 
             int32_t ledOnTimeUs = endTimeUs - startTimeUs;
 
-            pixel_[i].r = 255 * ledOnTimeUs / ledCyleTimeUs;
-            pixel_[i].g = 0;
-            pixel_[i].b = 0;
+            CHSV hsv = colorService_->getColor(now);
+            hsv.v = 255 * ledOnTimeUs / ledCyleTimeUs; // set brightness
+            pixel_[i] = hsv;
+//            pixel_[i].r = 255 * ledOnTimeUs / ledCyleTimeUs;
+//            pixel_[i].g = 0;
+//            pixel_[i].b = 0;
         }
         else
         {
@@ -47,6 +45,5 @@ void LinearGlider::update()
             pixel_[i].g = 0;
             pixel_[i].b = 0;
         }
-        
     }
 }

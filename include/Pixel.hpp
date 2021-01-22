@@ -1,7 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include "hsv2rgb.h"
 
+#if 0
 struct RGBPixel {
 	union {
 		struct {
@@ -21,3 +23,6 @@ struct RGBPixel {
 		uint8_t raw[3];
 	};
 };
+#else
+using RGBPixel = CRGB;
+#endif

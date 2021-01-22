@@ -2,31 +2,20 @@
 
 #include <chrono>
 #include "Pixel.hpp"
+#include "Ratio.hpp"
+#include "Time.hpp"
+#include "ColorService.hpp"
 
-template <typename T>
-struct Ratio
-{
-    constexpr Ratio(T numArg, T denomArg) :
-    num{numArg},
-    denom{denomArg}
-    {}
-
-    constexpr Ratio() :
-    num{0},
-    denom{1}
-    {}
-
-    T num;
-    T denom;
-};
 
 class LinearGlider
 {
   public:
-  LinearGlider();
+  LinearGlider(IColorService& colorService) :
+    colorService_{&colorService}
+  {}
 
-  void setup();
-  void update();
+  void setup(TimeOffset startOffset);
+  void update(TimeOffset now);
 
   const RGBPixel& get(unsigned index) const { return pixel_[index]; }
 
@@ -38,8 +27,9 @@ class LinearGlider
   
   // settings
   Ratio<uint16_t> beamWidth_ = Ratio<uint16_t>{20, 100};
-  std::chrono::milliseconds cycleTime_{std::chrono::milliseconds{1000}};
+  TimeOffset cycleTime_{std::chrono::milliseconds{1000}};
 
   // variables
-  std::chrono::steady_clock::time_point startTime_;
+  IColorService* colorService_;
+  TimeOffset startOffset_;
 };
