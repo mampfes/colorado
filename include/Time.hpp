@@ -4,5 +4,5 @@
 
 namespace colorado
 {
-using TimeOffset = std::chrono::microseconds;
+    using TimeOffset = std::chrono::microseconds;
 }

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <cstdint>
 #include "hsv2rgb.h"
+#include <cstdint>
 
 namespace colorado
 {
-    
 #if 0
 struct RGBPixel {
 	union {
@@ -27,7 +26,7 @@ struct RGBPixel {
 	};
 };
 #else
-using RGBPixel = CRGB;
+    using RGBPixel = CRGB;
 #endif
 
-}
+} // namespace colorado

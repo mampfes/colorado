@@ -1,16 +1,16 @@
 #include <Arduino.h>
 
-#include <FastLED.h>
-#include "LinearGlider.hpp"
 #include "ColorService.hpp"
+#include "LinearGlider.hpp"
+#include <FastLED.h>
 
-#define LED_PIN     5
-#define CLOCK_PIN   4
+#define LED_PIN 5
+#define CLOCK_PIN 4
 #define COLOR_ORDER GBR
-#define CHIPSET     WS2801
-#define NUM_LEDS    16
+#define CHIPSET WS2801
+#define NUM_LEDS 16
 
-#define BRIGHTNESS  200
+#define BRIGHTNESS 200
 #define FRAMES_PER_SECOND 1
 
 bool gReverseDirection = false;
@@ -19,7 +19,6 @@ CRGB leds[NUM_LEDS];
 
 void Fire2012WithPalette();
 
-
 // Fire2012 with programmable Color Palette
 //
 // This code is the same fire simulation as the original "Fire2012",
@@ -27,8 +26,8 @@ void Fire2012WithPalette();
 // programmable color palette, instead of through the "HeatColor(...)" function.
 //
 // Four different static color palettes are provided here, plus one dynamic one.
-// 
-// The three static ones are: 
+//
+// The three static ones are:
 //   1. the FastLED built-in HeatColors_p -- this is the default, and it looks
 //      pretty much exactly like the original Fire2012.
 //
@@ -49,51 +48,52 @@ void Fire2012WithPalette();
 
 CRGBPalette16 gPal;
 std::chrono::steady_clock::time_point startTime;
-colorado::RainbowColorService rainbowColor{CHSV{0,255,255}, std::chrono::seconds{2}};
+colorado::RainbowColorService rainbowColor{CHSV{0, 255, 255}, std::chrono::seconds{2}};
 //colorado::FixColorService fixColor{CHSV{0,255,255}};
 colorado::LinearGlider glider{rainbowColor};
 //colorado::LinearGlider glider{fixColor};
 
-void setup() {
-  delay(3000); // sanity delay
-  FastLED.addLeds<CHIPSET, LED_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
-  FastLED.setBrightness( BRIGHTNESS );
+void setup()
+{
+    delay(3000); // sanity delay
+    FastLED.addLeds<CHIPSET, LED_PIN, CLOCK_PIN, COLOR_ORDER>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+    FastLED.setBrightness(BRIGHTNESS);
 
-  startTime = std::chrono::steady_clock::now();
-  rainbowColor.setup(colorado::TimeOffset{0});
-  glider.setup(colorado::TimeOffset{0});
+    startTime = std::chrono::steady_clock::now();
+    rainbowColor.setup(colorado::TimeOffset{0});
+    glider.setup(colorado::TimeOffset{0});
 
-  // This first palette is the basic 'black body radiation' colors,
-  // which run from black to red to bright yellow to white.
-  gPal = PartyColors_p;
-  
-  // These are other ways to set up the color palette for the 'fire'.
-  // First, a gradient from black to red to yellow to white -- similar to HeatColors_p
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::Yellow, CRGB::White);
-  
-  // Second, this palette is like the heat colors, but blue/aqua instead of red/yellow
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Blue, CRGB::Aqua,  CRGB::White);
-  
-  // Third, here's a simpler, three-step gradient, from black to red to white
-  //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::White);
+    // This first palette is the basic 'black body radiation' colors,
+    // which run from black to red to bright yellow to white.
+    gPal = PartyColors_p;
 
-Serial.begin(115200);
+    // These are other ways to set up the color palette for the 'fire'.
+    // First, a gradient from black to red to yellow to white -- similar to HeatColors_p
+    //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::Yellow, CRGB::White);
+
+    // Second, this palette is like the heat colors, but blue/aqua instead of red/yellow
+    //   gPal = CRGBPalette16( CRGB::Black, CRGB::Blue, CRGB::Aqua,  CRGB::White);
+
+    // Third, here's a simpler, three-step gradient, from black to red to white
+    //   gPal = CRGBPalette16( CRGB::Black, CRGB::Red, CRGB::White);
+
+    Serial.begin(115200);
 }
 
 void loop()
 {
-//  Serial.println("Hallo");
-  auto timeOffset = std::chrono::duration_cast<colorado::TimeOffset>(std::chrono::steady_clock::now() - startTime);
-  glider.update(timeOffset);
-  for (int i = 0; i < NUM_LEDS; i++)
-  {
-    leds[i].r = glider.get(i).r;
-    leds[i].g = glider.get(i).g;
-    leds[i].b = glider.get(i).b;
-  }
-  //Serial.println("yy");
+    //  Serial.println("Hallo");
+    auto timeOffset = std::chrono::duration_cast<colorado::TimeOffset>(std::chrono::steady_clock::now() - startTime);
+    glider.update(timeOffset);
+    for (int i = 0; i < NUM_LEDS; i++)
+    {
+        leds[i].r = glider.get(i).r;
+        leds[i].g = glider.get(i).g;
+        leds[i].b = glider.get(i).b;
+    }
+    //Serial.println("yy");
 
-  FastLED.show(); // display this frame
- // FastLED.delay(1000 / FRAMES_PER_SECOND);
-  Serial.flush();
+    FastLED.show(); // display this frame
+                    // FastLED.delay(1000 / FRAMES_PER_SECOND);
+    Serial.flush();
 }
