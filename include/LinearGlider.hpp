@@ -6,6 +6,8 @@
 #include "Time.hpp"
 #include "ColorService.hpp"
 
+namespace colorado
+{
 
 class LinearGlider
 {
@@ -33,3 +35,5 @@ class LinearGlider
   IColorService* colorService_;
   TimeOffset startOffset_;
 };
+
+}

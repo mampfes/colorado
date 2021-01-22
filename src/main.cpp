@@ -49,10 +49,10 @@ void Fire2012WithPalette();
 
 CRGBPalette16 gPal;
 std::chrono::steady_clock::time_point startTime;
-RainbowColorService rainbowColor{CHSV{0,255,255}, std::chrono::seconds{2}};
-//FixColorService fixColor{CHSV{0,255,255}};
-LinearGlider glider{rainbowColor};
-//LinearGlider glider{fixColor};
+colorado::RainbowColorService rainbowColor{CHSV{0,255,255}, std::chrono::seconds{2}};
+//colorado::FixColorService fixColor{CHSV{0,255,255}};
+colorado::LinearGlider glider{rainbowColor};
+//colorado::LinearGlider glider{fixColor};
 
 void setup() {
   delay(3000); // sanity delay
@@ -60,8 +60,8 @@ void setup() {
   FastLED.setBrightness( BRIGHTNESS );
 
   startTime = std::chrono::steady_clock::now();
-  rainbowColor.setup(TimeOffset{0});
-  glider.setup(TimeOffset{0});
+  rainbowColor.setup(colorado::TimeOffset{0});
+  glider.setup(colorado::TimeOffset{0});
 
   // This first palette is the basic 'black body radiation' colors,
   // which run from black to red to bright yellow to white.
@@ -83,7 +83,7 @@ Serial.begin(115200);
 void loop()
 {
 //  Serial.println("Hallo");
-  auto timeOffset = std::chrono::duration_cast<TimeOffset>(std::chrono::steady_clock::now() - startTime);
+  auto timeOffset = std::chrono::duration_cast<colorado::TimeOffset>(std::chrono::steady_clock::now() - startTime);
   glider.update(timeOffset);
   for (int i = 0; i < NUM_LEDS; i++)
   {

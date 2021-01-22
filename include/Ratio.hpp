@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+namespace colorado
+{
+
 template <typename T>
 struct Ratio
 {
@@ -21,3 +24,5 @@ struct Ratio
 
 using LedIndex = Ratio<uint16_t>;
 using HueRatio = Ratio<uint8_t>;
+
+}

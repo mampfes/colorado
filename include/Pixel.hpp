@@ -3,6 +3,9 @@
 #include <cstdint>
 #include "hsv2rgb.h"
 
+namespace colorado
+{
+    
 #if 0
 struct RGBPixel {
 	union {
@@ -26,3 +29,5 @@ struct RGBPixel {
 #else
 using RGBPixel = CRGB;
 #endif
+
+}

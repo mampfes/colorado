@@ -2,6 +2,9 @@
 
 #include "LinearGlider.hpp"
 
+namespace colorado
+{
+
 void LinearGlider::setup(TimeOffset startTime)
 {
     startOffset_ = startTime;
@@ -46,4 +49,6 @@ void LinearGlider::update(TimeOffset now)
             pixel_[i].b = 0;
         }
     }
+}
+
 }

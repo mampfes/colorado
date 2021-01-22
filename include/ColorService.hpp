@@ -5,6 +5,9 @@
 
 #include "hsv2rgb.h"
 
+namespace colorado
+{
+
 class IColorService
 {
 public:
@@ -57,3 +60,5 @@ private:
     TimeOffset startTime_;
     TimeOffset cycleTime_{std::chrono::milliseconds{1000}};
 };
+
+}
