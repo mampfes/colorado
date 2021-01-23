@@ -1,8 +1,8 @@
 #include <Arduino.h>
 
-#include "BidirectionalGlider.hpp"
-#include "ColorService.hpp"
-#include "Rotator.hpp"
+#include "color/ColorService.hpp"
+#include "effect/BidirectionalGlider.hpp"
+#include "effect/Rotator.hpp"
 #include <FastLED.h>
 
 #define LED_PIN 5
@@ -49,11 +49,11 @@ void Fire2012WithPalette();
 
 CRGBPalette16 gPal;
 std::chrono::steady_clock::time_point startTime;
-colorado::RainbowColorService rainbowColor{CHSV{0, 255, 255}, std::chrono::seconds{2}};
-colorado::FixColorService fixColor{CHSV{0, 255, 255}};
-//colorado::BidirectionalGlider glider{fixColor};
-colorado::BidirectionalGlider glider{rainbowColor};
-colorado::Rotator rotator{rainbowColor};
+colorado::color::RainbowColorService rainbowColor{CHSV{0, 255, 255}, std::chrono::seconds{2}};
+colorado::color::FixColorService fixColor{CHSV{0, 255, 255}};
+//colorado::effect::BidirectionalGlider glider{fixColor};
+colorado::effect::BidirectionalGlider glider{rainbowColor};
+colorado::effect::Rotator rotator{rainbowColor};
 
 void setup()
 {
