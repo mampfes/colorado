@@ -52,7 +52,7 @@ void Fire2012WithPalette();
 
 CRGBPalette16 gPal;
 std::chrono::steady_clock::time_point startTime;
-colorado::color::RainbowColorService rainbowColor{CHSV{0, 255, 255}, std::chrono::seconds{2}};
+colorado::color::RainbowColorService rainbowColor{CHSV{0, 255, 255}};
 colorado::color::FixColorService fixColor{CHSV{0, 255, 255}};
 //colorado::effect::BidirectionalGlider glider{fixColor};
 colorado::effect::BidirectionalGlider glider{rainbowColor};

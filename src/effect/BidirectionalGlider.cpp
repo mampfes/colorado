@@ -6,24 +6,19 @@ namespace colorado
 {
     namespace effect
     {
-        void BidirectionalGlider::setup(MilliSeconds32 startTime)
-        {
-            startOffset_ = startTime;
-        }
-
         void BidirectionalGlider::update(MilliSeconds32 now)
         {
-            MilliSeconds32 cycleTime = cycleTime_ / 2;
-            MilliSeconds32 ledCyleTime = cycleTime / LED_COUNT;
-            MilliSeconds32 beamWidthDuration = cycleTime * beamWidth_.num / beamWidth_.denom;
+            MilliSeconds32 halfcycleTime = cycleTime() / 2;
+            MilliSeconds32 ledCyleTime = halfcycleTime / LED_COUNT;
+            MilliSeconds32 beamWidthDuration = halfcycleTime * beamWidth_.num / beamWidth_.denom;
 
-            auto qr = std::div((now - startOffset_).count(), (cycleTime - beamWidthDuration).count());
-            MilliSeconds32 beamStartTime = (qr.quot & 1) ? MilliSeconds32{qr.rem} : (cycleTime - beamWidthDuration - MilliSeconds32{qr.rem});
+            auto qr = std::div((now - startTime()).count(), (halfcycleTime - beamWidthDuration).count());
+            MilliSeconds32 beamStartTime = (qr.quot & 1) ? MilliSeconds32{qr.rem} : (halfcycleTime - beamWidthDuration - MilliSeconds32{qr.rem});
             MilliSeconds32 beamEndTime = beamStartTime + beamWidthDuration;
 
             for (int i = 0; i < LED_COUNT; i++)
             {
-                MilliSeconds32 ledStartTimeUs = cycleTime * i / LED_COUNT;
+                MilliSeconds32 ledStartTimeUs = halfcycleTime * i / LED_COUNT;
                 MilliSeconds32 ledEndTime = ledStartTimeUs + ledCyleTime;
 
                 MilliSeconds32 startTime{0}, endTime{0};

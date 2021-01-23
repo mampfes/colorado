@@ -6,22 +6,17 @@ namespace colorado
 {
     namespace effect
     {
-        void Rotator::setup(MilliSeconds32 startTime)
-        {
-            startTime_ = startTime;
-        }
-
         void Rotator::update(MilliSeconds32 now)
         {
-            MilliSeconds32 ledCyleTime = cycleTime_ / LED_COUNT;
-            MilliSeconds32 beamWidthDuration = cycleTime_ * beamWidth_.num / beamWidth_.denom;
+            MilliSeconds32 ledCyleTime = cycleTime() / LED_COUNT;
+            MilliSeconds32 beamWidthDuration = cycleTime() * beamWidth_.num / beamWidth_.denom;
 
-            MilliSeconds32 beamStartTime = (now - startTime_) % cycleTime_;
-            MilliSeconds32 beamEndTime = (beamStartTime + beamWidthDuration) % cycleTime_;
+            MilliSeconds32 beamStartTime = (now - startTime()) % cycleTime();
+            MilliSeconds32 beamEndTime = (beamStartTime + beamWidthDuration) % cycleTime();
 
             for (int i = 0; i < LED_COUNT; i++)
             {
-                MilliSeconds32 ledStartTime = cycleTime_ * i / LED_COUNT;
+                MilliSeconds32 ledStartTime = cycleTime() * i / LED_COUNT;
                 MilliSeconds32 ledEndTime = ledStartTime + ledCyleTime;
 
                 MilliSeconds32 startTime{0}, endTime{0};

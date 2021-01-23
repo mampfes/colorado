@@ -6,31 +6,23 @@ namespace colorado
 {
     namespace color
     {
-        class RainbowColorService : public IColorService
+        class RainbowColorService : public IColorService, public TimeService
         {
         public:
-            RainbowColorService(const CHSV& startColor, MilliSeconds32 cycleTime) :
-                startColor_{startColor},
-                cycleTime_{cycleTime}
+            RainbowColorService(const CHSV& startColor) :
+                startColor_{startColor}
             {
-            }
-
-            void setup(MilliSeconds32 startTime)
-            {
-                startTime_ = startTime;
             }
 
             CHSV getColor(MilliSeconds32 now, LedIndex /*ledIndex*/) const override
             {
                 CHSV color{startColor_};
-                color.hue = startColor_.hue + 256 * (now - startTime_) / cycleTime_;
+                color.hue = startColor_.hue + 256 * (now - startTime()) / cycleTime();
                 return color;
             }
 
         private:
             CHSV startColor_;
-            MilliSeconds32 startTime_{0};
-            MilliSeconds32 cycleTime_{std::chrono::milliseconds{2000}};
         };
     } // namespace color
 } // namespace colorado

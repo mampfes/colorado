@@ -10,7 +10,7 @@ namespace colorado
 {
     namespace effect
     {
-        class Rotator
+        class Rotator : public TimeService
         {
         public:
             Rotator(color::IColorService& colorService) :
@@ -18,7 +18,6 @@ namespace colorado
             {
             }
 
-            void setup(MilliSeconds32 startTime);
             void update(MilliSeconds32 now);
 
             const RGBPixel& get(unsigned index) const { return pixel_[index]; }
@@ -28,13 +27,8 @@ namespace colorado
 
             RGBPixel pixel_[LED_COUNT];
 
-            // settings
-            Ratio<uint16_t> beamWidth_ = Ratio<uint16_t>{20, 100};
-            MilliSeconds32 cycleTime_{std::chrono::milliseconds{2000}};
-
-            // variables
             color::IColorService* colorService_{nullptr};
-            MilliSeconds32 startTime_{0};
+            Ratio<uint16_t> beamWidth_ = Ratio<uint16_t>{20, 100};
         };
     } // namespace effect
 } // namespace colorado
