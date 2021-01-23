@@ -1,7 +1,9 @@
 #pragma once
 
-#include "hsv2rgb.h"
 #include <cstdint>
+#include <vector>
+
+#include "hsv2rgb.h"
 
 namespace colorado
 {
@@ -28,5 +30,8 @@ struct RGBPixel {
 #else
     using RGBPixel = CRGB;
 #endif
+
+    using HSVPixelArray = std::vector<CHSV>;
+    using RGBPixelArray = std::vector<CRGB>;
 
 } // namespace colorado

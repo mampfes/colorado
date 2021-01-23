@@ -20,8 +20,7 @@
 bool gReverseDirection = false;
 
 CRGB leds[NUM_LEDS];
-
-void Fire2012WithPalette();
+colorado::HSVPixelArray pixels{NUM_LEDS};
 
 // Fire2012 with programmable Color Palette
 //
@@ -90,23 +89,17 @@ void loop()
 {
     //  Serial.println("Hallo");
     colorado::MilliSeconds32 timeOffset{millis()};
-#if 1
-    glider.update(timeOffset);
-    for (int i = 0; i < NUM_LEDS; i++)
-    {
-        leds[i].r = glider.get(i).r;
-        leds[i].g = glider.get(i).g;
-        leds[i].b = glider.get(i).b;
-    }
+#if 0
+    glider.update(timeOffset, pixels);
 #else
-    rotator.update(timeOffset);
+    rotator.update(timeOffset, pixels);
+#endif
+
+    // convert from HSV to RGB
     for (int i = 0; i < NUM_LEDS; i++)
     {
-        leds[i].r = rotator.get(i).r;
-        leds[i].g = rotator.get(i).g;
-        leds[i].b = rotator.get(i).b;
+        leds[i] = pixels[i];
     }
-#endif
 
     FastLED.show(); // display this frame
                     // FastLED.delay(1000 / FRAMES_PER_SECOND);
