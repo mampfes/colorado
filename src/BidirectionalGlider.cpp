@@ -1,15 +1,15 @@
 #include <algorithm>
 
-#include "LinearGlider.hpp"
+#include "BidirectionalGlider.hpp"
 
 namespace colorado
 {
-    void LinearGlider::setup(TimeOffset startTime)
+    void BidirectionalGlider::setup(TimeOffset startTime)
     {
         startOffset_ = startTime;
     }
 
-    void LinearGlider::update(TimeOffset now)
+    void BidirectionalGlider::update(TimeOffset now)
     {
         // all calculations are done in microseconds relative to the start of the cycle
         int32_t cycleTimeUs = std::chrono::duration_cast<std::chrono::microseconds>(cycleTime_).count();

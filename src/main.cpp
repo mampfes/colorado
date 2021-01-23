@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
+#include "BidirectionalGlider.hpp"
 #include "ColorService.hpp"
-#include "LinearGlider.hpp"
 #include <FastLED.h>
 
 #define LED_PIN 5
@@ -50,8 +50,8 @@ CRGBPalette16 gPal;
 std::chrono::steady_clock::time_point startTime;
 colorado::RainbowColorService rainbowColor{CHSV{0, 255, 255}, std::chrono::seconds{2}};
 //colorado::FixColorService fixColor{CHSV{0,255,255}};
-colorado::LinearGlider glider{rainbowColor};
-//colorado::LinearGlider glider{fixColor};
+colorado::BidirectionalGlider glider{rainbowColor};
+//colorado::BidirectionalGlider glider{fixColor};
 
 void setup()
 {

@@ -8,10 +8,10 @@
 
 namespace colorado
 {
-    class LinearGlider
+    class BidirectionalGlider
     {
     public:
-        LinearGlider(IColorService& colorService) :
+        BidirectionalGlider(IColorService& colorService) :
             colorService_{&colorService}
         {
         }
