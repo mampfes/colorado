@@ -1,8 +1,11 @@
 #include <Arduino.h>
 
-#include "color/ColorService.hpp"
+#include "color/FixColorService.hpp"
+#include "color/RainbowColorService.hpp"
+
 #include "effect/BidirectionalGlider.hpp"
 #include "effect/Rotator.hpp"
+
 #include <FastLED.h>
 
 #define LED_PIN 5
