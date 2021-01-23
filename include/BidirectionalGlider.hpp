@@ -16,8 +16,8 @@ namespace colorado
         {
         }
 
-        void setup(TimeOffset startOffset);
-        void update(TimeOffset now);
+        void setup(MilliSeconds32 startOffset);
+        void update(MilliSeconds32 now);
 
         const RGBPixel& get(unsigned index) const { return pixel_[index]; }
 
@@ -28,11 +28,11 @@ namespace colorado
 
         // settings
         Ratio<uint16_t> beamWidth_ = Ratio<uint16_t>{20, 100};
-        TimeOffset cycleTime_{std::chrono::milliseconds{1000}};
+        MilliSeconds32 cycleTime_{std::chrono::milliseconds{2000}};
 
         // variables
         IColorService* colorService_;
-        TimeOffset startOffset_;
+        MilliSeconds32 startOffset_;
     };
 
 } // namespace colorado

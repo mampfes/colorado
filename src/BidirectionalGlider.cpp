@@ -4,49 +4,39 @@
 
 namespace colorado
 {
-    void BidirectionalGlider::setup(TimeOffset startTime)
+    void BidirectionalGlider::setup(MilliSeconds32 startTime)
     {
         startOffset_ = startTime;
     }
 
-    void BidirectionalGlider::update(TimeOffset now)
+    void BidirectionalGlider::update(MilliSeconds32 now)
     {
-        // all calculations are done in microseconds relative to the start of the cycle
-        int32_t cycleTimeUs = std::chrono::duration_cast<std::chrono::microseconds>(cycleTime_).count();
-        int32_t ledCyleTimeUs = cycleTimeUs / LED_COUNT;
+        MilliSeconds32 cycleTime = cycleTime_ / 2;
+        MilliSeconds32 ledCyleTime = cycleTime / LED_COUNT;
+        MilliSeconds32 beamWidthDuration = cycleTime * beamWidth_.num / beamWidth_.denom;
 
-        int32_t beamWidthTimeUs = cycleTimeUs * beamWidth_.num / beamWidth_.denom;
-        auto qr = std::div(std::chrono::duration_cast<TimeOffset>(now - startOffset_).count(), (cycleTimeUs - beamWidthTimeUs));
-        int32_t beamStartTimeUs = (qr.quot & 1) ? qr.rem : (cycleTimeUs - beamWidthTimeUs - qr.rem);
-        int32_t beamEndTimeUs = beamStartTimeUs + cycleTimeUs * beamWidth_.num / beamWidth_.denom;
+        auto qr = std::div((now - startOffset_).count(), (cycleTime - beamWidthDuration).count());
+        MilliSeconds32 beamStartTime = (qr.quot & 1) ? MilliSeconds32{qr.rem} : (cycleTime - beamWidthDuration - MilliSeconds32{qr.rem});
+        MilliSeconds32 beamEndTime = beamStartTime + beamWidthDuration;
 
-        //serial.println
         for (int i = 0; i < LED_COUNT; i++)
         {
-            int32_t ledStartTimeUs = cycleTimeUs * i / LED_COUNT;
-            int32_t ledEndTimeUs = ledStartTimeUs + ledCyleTimeUs;
+            MilliSeconds32 ledStartTimeUs = cycleTime * i / LED_COUNT;
+            MilliSeconds32 ledEndTime = ledStartTimeUs + ledCyleTime;
 
-            if (beamStartTimeUs < ledEndTimeUs && beamEndTimeUs > ledStartTimeUs)
+            MilliSeconds32 startTime{0}, endTime{0};
+            if (beamStartTime < ledEndTime && beamEndTime > ledStartTimeUs)
             {
                 // beam is within LED area
-                int32_t startTimeUs = std::max(beamStartTimeUs, ledStartTimeUs);
-                int32_t endTimeUs = std::min(beamEndTimeUs, ledEndTimeUs);
-
-                int32_t ledOnTimeUs = endTimeUs - startTimeUs;
-
-                CHSV hsv = colorService_->getColor(now);
-                hsv.v = 255 * ledOnTimeUs / ledCyleTimeUs; // set brightness
-                pixel_[i] = hsv;
-                //            pixel_[i].r = 255 * ledOnTimeUs / ledCyleTimeUs;
-                //            pixel_[i].g = 0;
-                //            pixel_[i].b = 0;
+                startTime = std::max(beamStartTime, ledStartTimeUs);
+                endTime = std::min(beamEndTime, ledEndTime);
             }
-            else
-            {
-                pixel_[i].r = 0;
-                pixel_[i].g = 0;
-                pixel_[i].b = 0;
-            }
+
+            MilliSeconds32 ledOnTime = endTime - startTime;
+
+            CHSV hsv = colorService_->getColor(now);
+            hsv.v = 255 * ledOnTime / ledCyleTime; // set brightness
+            pixel_[i] = hsv;
         }
     }
 

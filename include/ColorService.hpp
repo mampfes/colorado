@@ -10,10 +10,12 @@ namespace colorado
     class IColorService
     {
     public:
-        virtual CHSV getColor(TimeOffset timeOffset, LedIndex ledIndex) const = 0;
-        CHSV getColor(TimeOffset timeOffset) const
+        virtual CHSV getColor(MilliSeconds32 now, LedIndex ledIndex) const = 0;
+
+        // convenient function if LED position doesn't care
+        CHSV getColor(MilliSeconds32 now) const
         {
-            return getColor(timeOffset, LedIndex{1, 1});
+            return getColor(now, LedIndex{1, 1});
         }
     };
 
@@ -25,7 +27,7 @@ namespace colorado
         {
         }
 
-        CHSV getColor(TimeOffset /*timeOffset*/, LedIndex /*ledIndex*/) const override
+        CHSV getColor(MilliSeconds32 /*now*/, LedIndex /*ledIndex*/) const override
         {
             return hsv_;
         }
@@ -37,28 +39,28 @@ namespace colorado
     class RainbowColorService : public IColorService
     {
     public:
-        RainbowColorService(const CHSV& startColor, TimeOffset cycleTime) :
+        RainbowColorService(const CHSV& startColor, MilliSeconds32 cycleTime) :
             startColor_{startColor},
             cycleTime_{cycleTime}
         {
         }
 
-        void setup(TimeOffset startTime)
+        void setup(MilliSeconds32 startTime)
         {
             startTime_ = startTime;
         }
 
-        CHSV getColor(TimeOffset now, LedIndex /*ledIndex*/) const override
+        CHSV getColor(MilliSeconds32 now, LedIndex /*ledIndex*/) const override
         {
             CHSV color{startColor_};
-            color.hue = startColor_.hue + 256 * std::chrono::duration_cast<TimeOffset>(now - startTime_).count() / cycleTime_.count();
+            color.hue = startColor_.hue + 256 * (now - startTime_) / cycleTime_;
             return color;
         }
 
     private:
         CHSV startColor_;
-        TimeOffset startTime_;
-        TimeOffset cycleTime_{std::chrono::milliseconds{1000}};
+        MilliSeconds32 startTime_{0};
+        MilliSeconds32 cycleTime_{std::chrono::milliseconds{2000}};
     };
 
 } // namespace colorado

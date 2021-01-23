@@ -4,57 +4,55 @@
 
 namespace colorado
 {
-    void Rotator::setup(TimeOffset startTime)
+    void Rotator::setup(MilliSeconds32 startTime)
     {
-        startOffset_ = startTime;
+        startTime_ = startTime;
     }
 
-    void Rotator::update(TimeOffset now)
+    void Rotator::update(MilliSeconds32 now)
     {
-        // all calculations are done in microseconds relative to the start of the cycle
-        int32_t cycleTimeUs = std::chrono::duration_cast<TimeOffset>(cycleTime_).count();
-        int32_t ledCyleTimeUs = cycleTimeUs / LED_COUNT;
-        int32_t beamWidthTimeUs = cycleTimeUs * beamWidth_.num / beamWidth_.denom;
+        MilliSeconds32 ledCyleTime = cycleTime_ / LED_COUNT;
+        MilliSeconds32 beamWidthDuration = cycleTime_ * beamWidth_.num / beamWidth_.denom;
 
-        int32_t beamStartTimeUs = std::chrono::duration_cast<TimeOffset>(now - startOffset_).count() % cycleTimeUs;
-        int32_t beamEndTimeUs = (beamStartTimeUs + beamWidthTimeUs) % cycleTimeUs;
+        MilliSeconds32 beamStartTime = (now - startTime_) % cycleTime_;
+        MilliSeconds32 beamEndTime = (beamStartTime + beamWidthDuration) % cycleTime_;
 
         for (int i = 0; i < LED_COUNT; i++)
         {
-            int32_t ledStartTimeUs = cycleTimeUs * i / LED_COUNT;
-            int32_t ledEndTimeUs = ledStartTimeUs + ledCyleTimeUs;
+            MilliSeconds32 ledStartTime = cycleTime_ * i / LED_COUNT;
+            MilliSeconds32 ledEndTime = ledStartTime + ledCyleTime;
 
-            int32_t startTimeUs = 0, endTimeUs = 0;
-            if (beamStartTimeUs <= beamEndTimeUs)
+            MilliSeconds32 startTime{0}, endTime{0};
+            if (beamStartTime <= beamEndTime)
             {
-                if (beamStartTimeUs < ledEndTimeUs && beamEndTimeUs > ledStartTimeUs)
+                if (beamStartTime < ledEndTime && beamEndTime > ledStartTime)
                 {
                     // led is within beam area
-                    startTimeUs = std::max(beamStartTimeUs, ledStartTimeUs);
-                    endTimeUs = std::min(beamEndTimeUs, ledEndTimeUs);
+                    startTime = std::max(beamStartTime, ledStartTime);
+                    endTime = std::min(beamEndTime, ledEndTime);
                 }
             }
             else
             {
-                // overlapping area -> everything is inverted
-                if (beamEndTimeUs > ledStartTimeUs)
+                // overlapping area -> beamEndTime is smaller than beamStartTime
+                if (beamEndTime > ledStartTime)
                 {
-                    // range from 0 to beamEndTime
-                    startTimeUs = ledStartTimeUs;
-                    endTimeUs = std::min(beamEndTimeUs, ledEndTimeUs);
+                    // range from 0 to beamEndTime (which is smaller than beamStartTime)
+                    startTime = ledStartTime;
+                    endTime = std::min(beamEndTime, ledEndTime);
                 }
-                else if (beamStartTimeUs < ledEndTimeUs)
+                else if (beamStartTime < ledEndTime)
                 {
                     // range from beamStartTime to cycleTime (= end of led range)
-                    startTimeUs = std::max(beamStartTimeUs, ledStartTimeUs);
-                    endTimeUs = ledEndTimeUs;
+                    startTime = std::max(beamStartTime, ledStartTime);
+                    endTime = ledEndTime;
                 }
             }
 
-            int32_t ledOnTimeUs = endTimeUs - startTimeUs;
+            MilliSeconds32 ledOnTime = endTime - startTime;
 
             CHSV hsv = colorService_->getColor(now);
-            hsv.v = hsv.v * ledOnTimeUs / ledCyleTimeUs; // set brightness
+            hsv.v = hsv.v * ledOnTime / ledCyleTime; // set brightness
             pixel_[i] = hsv;
         }
     } // namespace colorado
