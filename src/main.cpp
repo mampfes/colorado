@@ -3,6 +3,7 @@
 #include "color/FixColorService.hpp"
 #include "color/RainbowColorService.hpp"
 
+#include "Statistics.hpp"
 #include "effect/BidirectionalGlider.hpp"
 #include "effect/Rotator.hpp"
 
@@ -56,6 +57,7 @@ colorado::color::FixColorService fixColor{CHSV{0, 255, 255}};
 //colorado::effect::BidirectionalGlider glider{fixColor};
 colorado::effect::BidirectionalGlider glider{rainbowColor};
 colorado::effect::Rotator rotator{rainbowColor};
+colorado::Statistics statistics;
 
 void setup()
 {
@@ -87,9 +89,12 @@ void setup()
 
 void loop()
 {
-    //  Serial.println("Hallo");
-    colorado::MilliSeconds32 timeOffset{millis()};
-#if 0
+    uint32_t now = millis();
+
+    statistics.tick(now);
+
+    colorado::MilliSeconds32 timeOffset{now};
+#if 1
     glider.update(timeOffset, pixels);
 #else
     rotator.update(timeOffset, pixels);
