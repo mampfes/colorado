@@ -8,15 +8,15 @@ namespace colorado
     {
         void Rotator::update(MilliSeconds32 now, HSVPixelArray& pixels)
         {
-            MilliSeconds32 ledCyleTime = cycleTime() / pixels.size();
+            MilliSeconds32 ledCyleTime = cycleTime() / pixels.count();
             MilliSeconds32 beamWidthDuration = cycleTime() * beamWidth_.num / beamWidth_.denom;
 
             MilliSeconds32 beamStartTime = (now - startTime()) % cycleTime();
             MilliSeconds32 beamEndTime = (beamStartTime + beamWidthDuration) % cycleTime();
 
-            for (unsigned i = 0; i < pixels.size(); i++)
+            for (unsigned i = 0; i < pixels.count(); i++)
             {
-                MilliSeconds32 ledStartTime = cycleTime() * i / pixels.size();
+                MilliSeconds32 ledStartTime = cycleTime() * i / pixels.count();
                 MilliSeconds32 ledEndTime = ledStartTime + ledCyleTime;
 
                 MilliSeconds32 startTime{0}, endTime{0};
